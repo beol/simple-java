@@ -5,13 +5,19 @@ TARGETS := clean compile test package install deploy
 ARTIFACT_ID := $(shell $(MVN) help:evaluate -q -Dexpression=project.artifactId -DforceStdout 2>/dev/null)
 VERSION := $(shell $(MVN) help:evaluate -q -Dexpression=project.version -DforceStdout 2>/dev/null)
 
-
-.PHONY: $(TARGETS) docker
-
-ifeq ($(CI),true)
-	MVNFLAGS += --batch-mode
+ifeq ($(DEBUG),true)
+MVNFLAGS := -X
 endif
 
+ifeq ($(CI),true)
+MVNFLAGS += --batch-mode
+endif
+
+ifeq ($(SKIP_TESTS),true)
+MVNFLAGS += -Dmaven.test.skip=true
+endif
+
+.PHONY: $(TARGETS) docker
 build: clean compile
 
 $(TARGETS):
