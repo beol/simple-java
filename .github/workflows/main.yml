@@ -28,6 +28,4 @@ jobs:
           sudo ln -sf apache-maven-3.9.9 latest
           echo "/usr/maven/latest/bin" >> "$GITHUB_PATH"
       - name: build
-        run: make
-      - name: create docker
         run: make docker
