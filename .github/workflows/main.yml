@@ -7,6 +7,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      CI: true
     steps:
       - uses: actions/checkout@v3
       - name: setup
@@ -16,7 +18,7 @@ jobs:
         run: |
           sudo mkdir -p /usr/java
           cd /usr/java
-          sudo sh -c "curl -fL https://download.bell-sw.com/java/17.0.13+12/bellsoft-jdk17.0.13+12-linux-amd64.tar.gz | tar xz"
+          sudo sh -c "curl -fsSL https://download.bell-sw.com/java/17.0.13+12/bellsoft-jdk17.0.13+12-linux-amd64.tar.gz | tar xz"
           sudo ln -sf jdk-17.0.13 latest
           echo "JAVA_HOME=/usr/java/latest" >> "$GITHUB_ENV"
           echo "/usr/java/latest/bin" >> "$GITHUB_PATH"
@@ -24,7 +26,7 @@ jobs:
         run: |
           sudo mkdir -p /usr/maven
           cd /usr/maven
-          sudo sh -c "curl -fL https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz | tar xz"
+          sudo sh -c "curl -fsSL https://dlcdn.apache.org/maven/maven-3/3.9.9/binaries/apache-maven-3.9.9-bin.tar.gz | tar xz"
           sudo ln -sf apache-maven-3.9.9 latest
           echo "/usr/maven/latest/bin" >> "$GITHUB_PATH"
       - name: build
