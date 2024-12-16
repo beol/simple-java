@@ -29,3 +29,5 @@ jobs:
           echo "/usr/maven/latest/bin" >> "$GITHUB_PATH"
       - name: build
         run: make
+      - name: create docker
+        run: make docker
