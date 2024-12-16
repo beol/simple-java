@@ -4,6 +4,9 @@ TARGETS := clean compile test package install deploy
 
 ARTIFACT_ID := $(shell $(MVN) help:evaluate -q -Dexpression=project.artifactId -DforceStdout 2>/dev/null)
 VERSION := $(shell $(MVN) help:evaluate -q -Dexpression=project.version -DforceStdout 2>/dev/null)
+MAJOR := $(word 1,$(subst ., ,$(VERSION)))
+MINOR := $(word 2,$(subst ., ,$(VERSION)))
+PATCH := $(word 3,$(subst ., ,$(VERSION)))
 
 ifeq ($(DEBUG),true)
 MVNFLAGS := -X
@@ -22,6 +25,10 @@ build: clean compile
 
 $(TARGETS):
 	$(MVN) $(MVNFLAGS) $@
+
+version:
+	$(MVN) $(MVNFLAGS) versions:set -DnewVersion=$(MAJOR).$(MINOR).$$((1+$(PATCH)))
+	
 
 docker: package
 	docker build -t $(ARTIFACT_ID):$(VERSION) --build-arg ARTIFACT_ID=$(ARTIFACT_ID) --build-arg VERSION=$(VERSION) .

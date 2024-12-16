@@ -1,2 +1,5 @@
 .mvn/
 target/
+
+*_
+*.versionsBackup
