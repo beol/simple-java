@@ -20,8 +20,8 @@ ifeq ($(SKIP_TESTS),true)
 MVNFLAGS += -Dmaven.test.skip=true
 endif
 
-.PHONY: $(TARGETS) docker
-build: clean compile
+.PHONY: $(TARGETS) version docker venv bump
+build: clean package
 
 $(TARGETS):
 	$(MVN) $(MVNFLAGS) $@
@@ -29,7 +29,18 @@ $(TARGETS):
 version:
 	$(MVN) $(MVNFLAGS) versions:set -DnewVersion=$(MAJOR).$(MINOR).$$((1+$(PATCH)))
 	
-
 docker: package
 	docker build -t $(ARTIFACT_ID):$(VERSION) --build-arg ARTIFACT_ID=$(ARTIFACT_ID) --build-arg VERSION=$(VERSION) .
 
+venv:
+	( \
+		python3 -m venv .venv; \
+		. .venv/bin/activate; \
+		pip3 install -r common-build-tools/requirements.txt; \
+	)
+
+bump: venv
+	@( \
+		. .venv/bin/activate; \
+		./common-build-tools/scripts/bump-patch; \
+	)
